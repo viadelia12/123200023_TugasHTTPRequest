@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pert6/api_data_source.dart';
-import 'package:pert6/detail_page.dart';
-import 'package:pert6/users_model.dart';
+
+import 'api_data_source.dart';
+import 'detail_page.dart';
+import 'users_model.dart';
 
 class PageListUsers extends StatefulWidget {
   const PageListUsers({Key? key}) : super(key: key);
@@ -21,15 +22,17 @@ class _PageListUsersState extends State<PageListUsers> {
     );
   }
 
-  Widget _buildListUsersBody() {
+  Widget _buildListUsersBody(){
     return Container(
       child: FutureBuilder(
         future: ApiDataSource.instance.loadUsers(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.hasError) {
+          if(snapshot.hasError){
+            // Jika data ada error maka akan ditampilkan hasil error
             return _buildErrorSection();
           }
-          if (snapshot.hasData) {
+          if(snapshot.hasData){
+            // Jika data ada dan berhasil maka akan ditampilkan hasil datanya
             UsersModel usersModel = UsersModel.fromJson(snapshot.data);
             return _buildSuccessSection(usersModel);
           }
@@ -40,7 +43,7 @@ class _PageListUsersState extends State<PageListUsers> {
   }
 
   Widget _buildErrorSection() {
-    return Text("ERROR");
+    return Text("Error");
   }
 
   Widget _buildLoadingSection() {
@@ -58,28 +61,27 @@ class _PageListUsersState extends State<PageListUsers> {
     );
   }
 
-  Widget _buildItemUsers(Data usersData) {
+  Widget _buildItemUsers(Data userData) {
     return InkWell(
       onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DetailPageUsers(
-                    idUser: usersData.id!,
-                  ))),
+              builder: (context) => DetailPageUser(idUser: userData.id!,))
+      ),
       child: Card(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
               width: 100,
-              child: Image.network(usersData.avatar!),
+              child: Image.network(userData.avatar!),
             ),
-            SizedBox(width: 20),
+            SizedBox(width: 20,),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(usersData.firstName! + " " + usersData.lastName!),
-                Text(usersData.email!)
+                Text(userData.firstName! + " " + userData.lastName!),
+                Text(userData.email!)
               ],
             ),
           ],
